@@ -1,4 +1,4 @@
-name: ct
+name: tag
 channels:
   - pytorch
   - pyg

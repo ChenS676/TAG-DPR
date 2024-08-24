@@ -131,7 +131,7 @@ class TCLTrainer():
             num_train_epochs=cf.epochs,
             local_rank=cf.local_rank,
             dataloader_num_workers=1,
-            fp16=True,
+            fp16=torch.cuda.is_available() # True,
         )
 
         self.trainer = CustomTrainer(

@@ -28,6 +28,15 @@ If you have multiple GPUs, you can simply execute this code in parallel.If you h
 CUDA_VISIBLE_DEVICES=0,1,2,3 python LM4Feature.py --csv_file 'data/CSTAG/Arxiv/Arxiv.csv' --model_name 'bert-base-uncased' --name 'Arxiv' --path 'data/CSTAG/Arxiv/Feature/' --max_length 512 --batch_size 1000 --cls
 ```
 
+```python
+CUDA_VISIBLE_DEVICES=0,1,2,3 python LM4Feature.py --csv_file 'data/CSTAG/CitationV8/Citation-2015.csv' --model_name 'bert-base-uncased' --name 'CitationV8' --path 'data/CSTAG/CitationV8/Feature/' --max_length 512 --batch_size 1000 --cls
+```
+
+```python
+CUDA_VISIBLE_DEVICES=0,1,2,3 python LM4Feature.py --csv_file 'data/CSTAG/Goodreads/Goodreads.csv' --model_name 'bert-base-uncased' --name 'Goodreads' --path 'data/CSTAG/Goodreads/Feature/' --max_length 512 --batch_size 1000 --cls
+```
+
+
 ```bash
 cd ../data/CSTAG/Arxiv/Feature/ && ls
 ```
@@ -37,9 +46,13 @@ If you follow the example code above, then you can see the feature file named <f
 
 ### 3. Other ways of representing text.🤗
 In addition to the common use of **[CLS]** tokens in last hidden layer to represent the global representation of a sentence/document, we can also use Mean_Pooling to obtain textual representations.
+
+On the link prediction task, we find that the mean pooling method may lead to better results. Meanwhile, for some generative LLMs, such as LlamaV2, Mixture, it is more reasonable to use the mean pooling method to obtain the textual representation.
 ```python
 # Ensure that you are in FeatureExtractor/
 CUDA_VISIBLE_DEVICES=0 python LM4Feature.py --csv_file 'data/CSTAG/Arxiv/Arxiv.csv' --model_name 'bert-base-uncased' --name 'Arxiv' --path 'data/CSTAG/Arxiv/Feature/' --max_length 512 --batch_size 500 --mean
+
+CUDA_VISIBLE_DEVICES=0,1 python LM4Feature.py --csv_file 'data/CSTAG/CitationV8/Citation-2015.csv' --model_name 'bert-base-uncased' --name 'CitationV8' --path 'data/CSTAG/CitationV8/Feature' --max_length 512 --batch_size 500 --mean
 ```
 
 ```bash

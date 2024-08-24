@@ -43,8 +43,12 @@ for update and debug
 ```
 ### 5. TCL for PreTraining 
 ```python
-CUDA_VISIBLE_DEVICES=0,1 /usr/bin/env python sweep/dist_runner.py LMs/Train_Command/train_CL.py --PrtMode=TCL --att_dropout=0.1 --cla_dropout=0.1 --dataset=Photo_RS --dropout=0.1 --epochs=5 --eq_batch_size=60 --per_device_bsz=15 --grad_steps=2 --lr=5e-05 --model=Bert --warmup_epochs=1 --gpus=0,1 --cache_dir=exp/TCL/Photo/Bert_base/
+CUDA_VISIBLE_DEVICES=1,2 /usr/bin/env python sweep/dist_runner.py LMs/Train_Command/train_CL.py --PrtMode=TCL --att_dropout=0.1 --cla_dropout=0.1 --dataset=Photo_RS --dropout=0.1 --epochs=5 --eq_batch_size=60 --per_device_bsz=15 --grad_steps=2 --lr=5e-05 --model=Bert --warmup_epochs=1 --gpus=1,2 --cache_dir=exp/TCL/Photo/Bert_base/
 ```
+```python
+python LMs/Train_Command/train_CL.py --PrtMode=TCL --att_dropout=0.1 --cla_dropout=0.1 --dataset=Photo_RS --dropout=0.1 --epochs=5 --eq_batch_size=60 --per_device_bsz=15 --grad_steps=2 --lr=5e-05 --model=Bert --warmup_epochs=1 --gpus=1,2 --cache_dir=exp/TCL/Photo/Bert_base/
+```
+
 ### 6. TMDC for Training 
 ```python
 for update and debug

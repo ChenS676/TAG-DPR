@@ -28,3 +28,4 @@ def _tokenize_amazon_datasets(d):
             np.save(f, tokenized[k])
     uf.pickle_save('processed', d._processed_flag['token'])
     return
+

@@ -30,7 +30,7 @@ def main():
     parser = argparse.ArgumentParser(
         description='Process text data and save the overall representation as an NPY file.')
     parser.add_argument('--csv_file', type=str, help='Path to the CSV file')
-    parser.add_argument('--text_column', type=str, default='text', help='Name of the column containing text data')
+    parser.add_argument('--text_column', type=str, default='title', help='Name of the column containing text data, title for goodread, text for citationv8')
     parser.add_argument('--model_name', type=str, default='prajjwal1/bert-tiny', required=True,
                         help='Name or path of the Huggingface model')
     parser.add_argument('--tokenizer_name', type=str, default=None)
@@ -38,7 +38,7 @@ def main():
     parser.add_argument('--path', type=str, default='./', help='Path to the NPY File')
     parser.add_argument('--pretrain_path', type=str, default=None, help='Path to the NPY File')
     parser.add_argument('--max_length', type=int, default=128, help='Maximum length of the text for language models')
-    parser.add_argument('--batch_size', type=int, default=1000, help='Number of batch size for inference')
+    parser.add_argument('--batch_size', type=int, default=2, help='Number of batch size for inference')
     parser.add_argument('--fp16', type=bool, default=True, help='if fp16')
     parser.add_argument('--cls', action='store_true', help='whether use cls token  to represent the whole text')
     parser.add_argument('--mean', action='store_true', help='whether use mean pooling to represent the whole text')
@@ -50,8 +50,15 @@ def main():
     # 解析命令行参数
     args = parser.parse_args()
     csv_file = args.csv_file
+    
     text_column = args.text_column
     model_name = args.model_name
+    
+    if args.name == 'CitationV8':
+        text_column = 'text'
+    if args.name == 'Goodreads':
+        text_column = 'title'
+        
     name = args.name
     max_length = args.max_length
     batch_size = args.batch_size
@@ -118,6 +125,7 @@ def main():
 
     # read the csv file from the local
     df = pd.read_csv(os.path.join(base_dir, csv_file))
+    
     text_data = df[text_column].tolist()
 
     # 加载模型和分词器
@@ -130,12 +138,12 @@ def main():
         tokenizer.pad_token = tokenizer.eos_token
     encoded_inputs = tokenizer(text_data, padding=True, truncation=True, max_length=max_length, return_tensors='pt')
     dataset = Dataset.from_dict(encoded_inputs)
-
+    print('Dataset loaded')
     if args.pretrain_path is not None:
         model = AutoModel.from_pretrained(f'{args.pretrain_path}')
         print('Loading model from the path: {}'.format(args.pretrain_path))
     else:
-        model = AutoModel.from_pretrained(model_name, trust_remote_code=True, token=args.access_token)
+        model = AutoModel.from_pretrained(model_name, trust_remote_code=True) #, token=args.access_token
 
 
     CLS_Feateres_Extractor = CLSEmbInfModel(model)
@@ -150,7 +158,8 @@ def main():
         per_device_eval_batch_size=batch_size,
         dataloader_drop_last=False,
         dataloader_num_workers=1,
-        fp16_full_eval=args.fp16,
+        fp16=True, #torch.cuda.is_available(),  #args.fp16,
+        #fp16_full_eval=torch.cuda.is_available()  #args.fp16,
     )
 
     # CLS representatoin
